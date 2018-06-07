@@ -1,10 +1,10 @@
 <template>
     <my-page class="page-exam" :title="title" backable>
-        <div class="number-box">
-            {{ number }}
-        </div>
+
         <div class="count-box">
-            <div>{{ time }}</div>
+            <div>连续答对：{{ continuousRightCount }}</div>
+            <div>答对：{{ rightCount }}</div>
+            <div>答错：{{ errorCount }}</div>
         </div>
         <div class="screen">{{ question }} = {{ inputStr }}</div>
 
@@ -54,9 +54,7 @@
         data () {
             return {
                 title: '启蒙测试',
-                time: '',
                 type: 1,
-                number: 10,
                 question: '9+8',
                 inputStr: '',
                 answer: '17',
@@ -69,18 +67,11 @@
             let titles = ['', '启蒙', '休闲', '负重', '残酷']
             this.type = parseInt(this.$route.params.type)
             this.title = titles[this.type]
-            this.startTime = new Date().getTime()
             this.timer = setInterval(() => {
-                this.time = ((new Date().getTime() - this.startTime) / 1000).toFixed(2) + 's'
-            }, 100)
+            }, 1000)
             this.make()
         },
         methods: {
-            end() {
-                clearInterval(this.timer)
-                alert('用时' + this.time)
-                this.$router.push('/quick')
-            },
             ramdom(min, max) {
                 return Math.round(min + Math.random() * (max - min))
             },
@@ -128,26 +119,25 @@
             },
             input(value) {
                 this.inputStr += value
-                if (this.inputStr.length === this.answer.length) {
-                    if (this.inputStr !== this.answer) {
-                        this.$message({
-                            type: 'danger',
-                            text: '答错了'
-                        })
-                        this.inputStr = ''
-                    } else {
-                        this.$message({
-                            type: 'success',
-                            text: '答对了'
-                        })
-                        this.number--
-                        if (this.number === 0) {
-                            this.end()
-                        } else {
-                            this.make()
-                        }
-                    }
-                }
+                // if (this.inputStr === this.answer) {
+                //     this.$message({
+                //         type: 'success',
+                //         text: '答对了'
+                //     })
+                //     this.continuousRightCount++
+                //     this.rightCount++
+                //     this.make()
+                //     return
+                // }
+                // if (!this.answer.includes(this.inputStr)) {
+                //     this.$message({
+                //         type: 'danger',
+                //         text: '答错了'
+                //     })
+                //     this.errorCount++
+                //     this.continuousRightCount = 0
+                //     this.make()
+                // }
             },
             remove() {
                 if (this.inputStr.length > 1) {
@@ -213,11 +203,5 @@
     position: absolute;
     right: 16px;
     top: 16px;
-}
-.number-box {
-    position: absolute;
-    top: 16px;
-    left: 24px;
-    font-size: 32px;
 }
 </style>
