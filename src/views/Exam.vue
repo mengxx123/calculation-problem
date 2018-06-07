@@ -37,13 +37,13 @@
                 <div class="btn" @click="input(9)">9</div>
             </li>
              <li class="item">
-                <div class="btn"></div>
+                <div class="btn" @click="remove">×</div>
             </li>
             <li class="item">
                 <div class="btn" @click="input(0)">0</div>
             </li>
             <li class="item">
-                <div class="btn"></div>
+                <div class="btn" @click="ok()">=</div>
             </li>
         </ul>
     </my-page>
@@ -65,27 +65,86 @@
         },
         mounted() {
             let titles = ['', '启蒙', '休闲', '负重', '残酷']
-            this.type = this.$route.params.type
+            this.type = parseInt(this.$route.params.type)
             this.title = titles[this.type]
             this.timer = setInterval(() => {
-
             }, 1000)
-            if (this.type === 1) {
-            }
+            this.make()
         },
         methods: {
             ramdom(min, max) {
                 return Math.round(min + Math.random() * (max - min))
             },
             make() {
-                let a = this.ramdom(0, 9)
-                let b = this.ramdom(0, 9)
-                this.question = a + '+' + b
-                this.answer = '' + (a + b)
-                this.inputStr = ''
+                console.log(typeof this.type)
+                if (this.type === 1) {
+                    let a = this.ramdom(0, 9)
+                    let b = this.ramdom(0, 9)
+                    if (Math.random() > 0.5) {
+                        this.question = a + '+' + b
+                        this.answer = '' + (a + b)
+                    } else {
+                        let max = Math.max(a, b)
+                        let min = Math.min(a, b)
+                        this.question = max + '-' + min
+                        this.answer = '' + (max - min)
+                    }
+                    this.inputStr = ''
+                } else if (this.type === 2) {
+                    let a = this.ramdom(10, 99)
+                    let b = this.ramdom(10, 90)
+                    if (Math.random() > 0.5) {
+                        this.question = a + '+' + b
+                        this.answer = '' + (a + b)
+                    } else {
+                        let max = Math.max(a, b)
+                        let min = Math.min(a, b)
+                        this.question = max + '-' + min
+                        this.answer = '' + (max - min)
+                    }
+                    this.inputStr = ''
+                } else if (this.type === 3) {
+                    let a = this.ramdom(10, 99)
+                    let b = this.ramdom(1, 9)
+                    this.question = a + '×' + b
+                    this.answer = '' + (a * b)
+                    this.inputStr = ''
+                } else if (this.type === 4) {
+                    let a = this.ramdom(10, 99)
+                    let b = this.ramdom(10, 99)
+                    this.question = a + '×' + b
+                    this.answer = '' + (a * b)
+                    this.inputStr = ''
+                }
             },
             input(value) {
                 this.inputStr += value
+                // if (this.inputStr === this.answer) {
+                //     this.$message({
+                //         type: 'success',
+                //         text: '答对了'
+                //     })
+                //     this.continuousRightCount++
+                //     this.rightCount++
+                //     this.make()
+                //     return
+                // }
+                // if (!this.answer.includes(this.inputStr)) {
+                //     this.$message({
+                //         type: 'danger',
+                //         text: '答错了'
+                //     })
+                //     this.errorCount++
+                //     this.continuousRightCount = 0
+                //     this.make()
+                // }
+            },
+            remove() {
+                if (this.inputStr.length > 1) {
+                    this.inputStr = this.inputStr.substr(0, this.inputStr.length - 1)
+                }
+            },
+            ok() {
                 if (this.inputStr === this.answer) {
                     this.$message({
                         type: 'success',
